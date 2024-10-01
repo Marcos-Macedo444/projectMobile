@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   dateButton: {
-    backgroundColor: '#4A90E2', // Cor de fundo do botão
+    backgroundColor: '#4A90E2', 
     borderRadius: 10,
     padding: 15,
     alignItems: 'center',
@@ -183,11 +183,11 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.2,
     shadowRadius: 3.84,
-    elevation: 3, // Sombra para Android
+    elevation: 3, 
   },
   dateText: {
     fontSize: 16,
-    color: '#fff', // Cor do texto
+    color: '#fff', 
   },
   profileIcon: {
     position: 'absolute',

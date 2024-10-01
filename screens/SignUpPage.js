@@ -8,7 +8,7 @@ export default function SignUpPage({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false); // Para alternar a visibilidade da senha
+  const [showPassword, setShowPassword] = useState(false); 
 
   const handleSignUp = async () => {
     if (password !== confirmPassword) {
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: '#1E90FF', // Fundo azul
+    backgroundColor: '#1E90FF', 
   },
   title: {
     fontSize: 28,
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#fff', // Borda branca para harmonizar com o fundo
+    borderColor: '#fff', 
     borderRadius: 10,
     marginBottom: 10,
     backgroundColor: '#fff',
@@ -110,14 +110,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   button: {
-    backgroundColor: '#fff', // Cor do botão
+    backgroundColor: '#fff', 
     borderRadius: 10,
     padding: 15,
     alignItems: 'center',
     marginTop: 10,
   },
   buttonText: {
-    color: '#1E90FF', // Cor do texto do botão
+    color: '#1E90FF', 
     fontWeight: 'bold',
   },
 });

@@ -78,8 +78,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginBottom: 30,
     borderRadius: 15,
-    borderWidth: 3, // Adicionando borda à imagem
-    borderColor: '#fff', // Cor da borda
+    borderWidth: 3, 
+    borderColor: '#fff', 
   },
   inputContainer: {
     flexDirection: 'row',

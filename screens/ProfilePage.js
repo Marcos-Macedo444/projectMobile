@@ -4,8 +4,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Button, Image } from 'react-n
 import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function ProfilePage({ navigation }) {
-  const handleLogout = () => {
-    // Lógica de logout pode ser adicionada aqui, se necessário
+  const handleLogout = () => {  
     navigation.navigate('Login'); // Navegar para a tela de login
   };
 
@@ -14,7 +13,7 @@ export default function ProfilePage({ navigation }) {
       <Text style={styles.title}>Perfil</Text>
       <View style={styles.profileInfo}>
         <Image 
-          source={require('../assets/profile-image.png')} // Certifique-se de que o caminho está correto
+          source={require('../assets/profile-image.png')} 
           style={styles.profileImage}
         />
         <Text style={styles.username}>Olá, Marcos Macêdo</Text>

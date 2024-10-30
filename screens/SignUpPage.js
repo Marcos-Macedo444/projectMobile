@@ -28,8 +28,8 @@ export default function SignUpPage({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Image source={require('../assets/login-image.png')} style={styles.image} />
       <Text style={styles.title}>CADASTRO</Text>
+      <Image source={require('../assets/logo.png')} style={styles.image} />
       <View style={styles.card}>
         <View style={styles.inputContainer}>
           <Icon name="mail-outline" size={24} color="#888" style={styles.icon} />
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '80%',
-    height: 200,
+    height: 250,
     alignSelf: 'center',
     marginBottom: 30,
     borderColor: '#00FF00',

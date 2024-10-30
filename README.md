@@ -1,4 +1,4 @@
-Claro! Aqui está o conteúdo completo em Markdown:
+# Taskify Project
 
 ```markdown
 # Projeto de Gerenciamento de Tarefas Diárias
@@ -21,7 +21,7 @@ Este projeto é um aplicativo de gerenciamento de tarefas diárias, que permite 
 - **React Navigation**: Para navegação entre as telas do aplicativo.
 - **Ionicons**: Para ícones utilizados nas interfaces.
 
-# Estrutura do Projeto
+## Estrutura do Projeto
 
 ```plaintext
 projectMobile/
@@ -39,6 +39,7 @@ projectMobile/
 │   └── SignUpPage.js
 ├── App.js
 └── package.json
+```
 
 ## Instalação
 
@@ -68,19 +69,9 @@ Para executar este projeto em sua máquina local, siga os passos abaixo:
    npm start
    ```
 
-## Estrutura do Projeto
-
-O projeto é organizado em várias telas, incluindo:
-
-- `LoginScreen.js`: Tela de login.
-- `SignUpPage.js`: Tela de cadastro.
-- `Home.js`: Tela inicial onde as tarefas são gerenciadas.
-- `ProfilePage.js`: Página de perfil do usuário.
-
 ## Contribuição
 
 Contribuições são bem-vindas! Sinta-se à vontade para abrir uma *issue* ou enviar um *pull request*.
-
 
 ## Contato
 

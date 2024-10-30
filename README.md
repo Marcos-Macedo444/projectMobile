@@ -21,6 +21,25 @@ Este projeto é um aplicativo de gerenciamento de tarefas diárias, que permite 
 - **React Navigation**: Para navegação entre as telas do aplicativo.
 - **Ionicons**: Para ícones utilizados nas interfaces.
 
+# Estrutura do Projeto
+
+```plaintext
+projectMobile/
+├── assets/
+│   ├── logo.png
+│   └── profile-image.png
+├── components/
+│   ├── CustomButton.js
+│   ├── MyCustomModal.js
+│   └── TaskItem.js
+├── screens/
+│   ├── HomeScreen.js
+│   ├── LoginScreen.js
+│   ├── ProfilePage.js
+│   └── SignUpPage.js
+├── App.js
+└── package.json
+
 ## Instalação
 
 Para executar este projeto em sua máquina local, siga os passos abaixo:
@@ -34,7 +53,7 @@ Para executar este projeto em sua máquina local, siga os passos abaixo:
 2. Navegue até o diretório do projeto:
 
    ```bash
-   cd nome-do-repositorio
+   cd projectMobile
    ```
 
 3. Instale as dependências:
@@ -68,5 +87,6 @@ Contribuições são bem-vindas! Sinta-se à vontade para abrir uma *issue* ou e
 Se você tiver alguma dúvida ou sugestão, entre em contato:
 
 - **Email**: marcosfilipe.macedo@gmail.com
+- **Email**: Igor010@tutanota.com
 ```
 

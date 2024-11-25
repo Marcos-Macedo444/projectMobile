@@ -3,6 +3,9 @@ import { View, TextInput, Button, FlatList, Text, StyleSheet, TouchableOpacity, 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/Ionicons';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import axios from 'axios';
+
+const API_URL = 'https://67437f64b7464b1c2a64fdcb.mockapi.io/api/taskfy/task'; // Substitua pela sua URL
 
 export default function HomeScreen({ navigation }) {
   const [task, setTask] = useState('');
@@ -13,6 +16,7 @@ export default function HomeScreen({ navigation }) {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [mostrarSugestoes, setMostrarSugestoes] = useState(false);
+  const [userId, setUserId] = useState(null); // Variável para armazenar o userId
 
   const tarefasDiarias = [
     "Ir à academia",
@@ -120,22 +124,43 @@ export default function HomeScreen({ navigation }) {
     "Andar de bicicleta",
     "Nadar",
     "Passear ao ar livre",
-];
-
-
+  ];
 
   useEffect(() => {
+    loadUserData();
     loadTasks();
   }, []);
 
+  const loadUserData = async () => {
+    const storedUserId = await AsyncStorage.getItem('userId');
+    if (storedUserId) {
+      setUserId(storedUserId);
+    } else {
+      // Lógica para obter o userId, pode ser do login ou de outra forma
+      // Exemplo:
+      setUserId('12345'); // Defina um userId fixo ou do login
+      await AsyncStorage.setItem('userId', '12345'); // Armazene no AsyncStorage
+    }
+  };
+
   const loadTasks = async () => {
+    if (!userId) return;
+
     const storedTasks = await AsyncStorage.getItem('tasks');
     if (storedTasks) {
-      const parsedTasks = JSON.parse(storedTasks).map(task => ({
-        ...task,
-        dueDate: new Date(task.dueDate),
-      }));
+      const parsedTasks = JSON.parse(storedTasks).filter(task => task.userId === userId);
       setTaskList(parsedTasks);
+    } else {
+      try {
+        const response = await axios.get(`${API_URL}?userId=${userId}`);
+        const tasksFromAPI = response.data.map(task => ({
+          ...task,
+          dueDate: new Date(task.dueDate), // Convertendo a string de volta para Date
+        }));
+        setTaskList(tasksFromAPI);
+      } catch (error) {
+        Alert.alert('Erro', 'Falha ao carregar tarefas da API');
+      }
     }
   };
 
@@ -145,8 +170,8 @@ export default function HomeScreen({ navigation }) {
       return;
     }
 
-    const existingTask = taskList.find(item => 
-      item.task === task && 
+    const existingTask = taskList.find(item =>
+      item.task === task &&
       item.dueDate.toLocaleDateString() === dueDate.toLocaleDateString()
     );
 
@@ -155,13 +180,29 @@ export default function HomeScreen({ navigation }) {
       return;
     }
 
-    const updatedTasks = [...taskList, { task, urgent, dueDate }];
-    setTaskList(updatedTasks);
-    await AsyncStorage.setItem('tasks', JSON.stringify(updatedTasks));
-    setTask('');
-    setUrgent('opcional');
-    setDueDate(new Date());
-    setMostrarSugestoes(false);
+    const formattedDate = dueDate.toISOString();
+
+    const newTask = { 
+      task, 
+      urgent, 
+      dueDate: formattedDate,
+      userId, // Adicionando o userId
+    };
+
+    try {
+      await axios.post(API_URL, newTask);
+
+      const updatedTasks = [...taskList, newTask];
+      setTaskList(updatedTasks);
+      await AsyncStorage.setItem('tasks', JSON.stringify(updatedTasks));
+
+      setTask('');
+      setUrgent('opcional');
+      setDueDate(new Date());
+      setMostrarSugestoes(false);
+    } catch (error) {
+      Alert.alert('Erro', 'Falha ao adicionar tarefa na API');
+    }
   };
 
   const deleteTask = async (taskToDelete) => {
@@ -192,26 +233,25 @@ export default function HomeScreen({ navigation }) {
     setMostrarSugestoes(false);
   };
 
-  const filteredSuggestions = tarefasDiarias.filter(suggestion => 
+  const filteredSuggestions = tarefasDiarias.filter(suggestion =>
     suggestion.toLowerCase().includes(task.toLowerCase())
   );
 
   return (
     <View style={styles.container}>
-    <Text style={styles.title}>Minhas Tarefas</Text>    
-    <Text style={styles.taskCount}>Você tem {taskList.length} tarefas</Text>
+      <Text style={styles.title}>Minhas Tarefas</Text>
+      <Text style={styles.taskCount}>Você tem {taskList.length} tarefas</Text>
 
       <Image source={profileImage} style={styles.profileImage} />
 
       <TextInput
-  style={styles.input}
-  placeholder="Adicionar tarefa"
-  value={task}
-  onChangeText={setTask}
-  onFocus={() => setMostrarSugestoes(true)}
-  keyboardType="default"  // Esta linha permite acentuação
-/>
-
+        style={styles.input}
+        placeholder="Adicionar tarefa"
+        value={task}
+        onChangeText={setTask}
+        onFocus={() => setMostrarSugestoes(true)}
+        keyboardType="default"
+      />
 
       {mostrarSugestoes && (
         <View style={styles.suggestionsContainer}>
@@ -277,7 +317,7 @@ export default function HomeScreen({ navigation }) {
         renderItem={({ item }) => (
           <View style={styles.taskContainer}>
             <Text style={styles.taskText}>
-              {item.task} - {item.urgent} - {item.dueDate instanceof Date ? item.dueDate.toLocaleString() : 'Data inválida'}
+              {item.task} - {item.urgent} - {new Date(item.dueDate).toLocaleString() || 'Data inválida'}
             </Text>
             <TouchableOpacity onPress={() => deleteTask(item)}>
               <Icon name="trash-outline" size={24} color="red" />
@@ -289,13 +329,13 @@ export default function HomeScreen({ navigation }) {
 
       <Button title="Limpar Lista" onPress={clearTasks} />
 
-    <TouchableOpacity style={styles.profileIcon} onPress={() => navigation.navigate('ProfilePage', { taskCount: taskList.length })}>
-      <Image source={require('../assets/profile-image.png')} style={styles.profileImageSmall} />
-    </TouchableOpacity>
-
+      <TouchableOpacity style={styles.profileIcon} onPress={() => navigation.navigate('ProfilePage', { taskCount: taskList.length })}>
+        <Image source={require('../assets/profile-image.png')} style={styles.profileImageSmall} />
+      </TouchableOpacity>
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

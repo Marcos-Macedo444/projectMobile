@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { View, TextInput, StyleSheet, Text, Image, Alert, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/Ionicons';
+import axios from 'axios';
+
+const API_URL = 'https://67437f64b7464b1c2a64fdcb.mockapi.io/api/taskfy/users'; // Novo endpoint para usuários
 
 export default function SignUpPage({ navigation }) {
   const [email, setEmail] = useState('');
@@ -10,6 +13,7 @@ export default function SignUpPage({ navigation }) {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSignUp = async () => {
+    // Validações
     if (!email || !password || !confirmPassword) {
       Alert.alert('Erro', 'Todos os campos devem ser preenchidos.');
       return;
@@ -21,9 +25,22 @@ export default function SignUpPage({ navigation }) {
     }
 
     const user = { email, password };
-    await AsyncStorage.setItem('user', JSON.stringify(user));
-    Alert.alert('Sucesso', 'Usuário cadastrado com sucesso!');
-    navigation.navigate('Login');
+
+    try {
+      // Enviando os dados para a API MockAPI
+      const response = await axios.post(API_URL, user); // Fazendo o POST na API
+      if (response.status === 201) {
+        // Armazenando o usuário no AsyncStorage
+        await AsyncStorage.setItem('user', JSON.stringify(user));
+        Alert.alert('Sucesso', 'Usuário cadastrado com sucesso!');
+        navigation.navigate('Login');
+      } else {
+        Alert.alert('Erro', 'Erro ao cadastrar usuário. Tente novamente.');
+      }
+    } catch (error) {
+      Alert.alert('Erro', 'Erro ao cadastrar usuário. Tente novamente.');
+      console.error(error);
+    }
   };
 
   return (
@@ -31,6 +48,7 @@ export default function SignUpPage({ navigation }) {
       <Text style={styles.title}>CADASTRO</Text>
       <Image source={require('../assets/logo.png')} style={styles.image} />
       <View style={styles.card}>
+        {/* E-mail */}
         <View style={styles.inputContainer}>
           <Icon name="mail-outline" size={24} color="#888" style={styles.icon} />
           <TextInput
@@ -41,6 +59,8 @@ export default function SignUpPage({ navigation }) {
             keyboardType="email-address"
           />
         </View>
+        
+        {/* Senha */}
         <View style={styles.inputContainer}>
           <Icon name="lock-closed-outline" size={24} color="#888" style={styles.icon} />
           <TextInput
@@ -54,6 +74,8 @@ export default function SignUpPage({ navigation }) {
             <Icon name={showPassword ? "eye-outline" : "eye-off-outline"} size={24} color="#888" />
           </TouchableOpacity>
         </View>
+
+        {/* Confirmar Senha */}
         <View style={styles.inputContainer}>
           <Icon name="lock-closed-outline" size={24} color="#888" style={styles.icon} />
           <TextInput
@@ -67,9 +89,13 @@ export default function SignUpPage({ navigation }) {
             <Icon name={showPassword ? "eye-outline" : "eye-off-outline"} size={24} color="#888" />
           </TouchableOpacity>
         </View>
+
+        {/* Botão de Cadastrar */}
         <TouchableOpacity style={styles.button} onPress={handleSignUp}>
           <Text style={styles.buttonText}>Cadastrar</Text>
         </TouchableOpacity>
+
+        {/* Botão de Voltar */}
         <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Login')}>
           <Text style={styles.backButtonText}>Voltar</Text>
         </TouchableOpacity>
@@ -77,7 +103,6 @@ export default function SignUpPage({ navigation }) {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { View, TextInput, StyleSheet, Text, Image, Alert, TouchableOpacity } from 'react-native';
+import { View, TextInput, Text, Image, Alert, TouchableOpacity, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
 
-const API_URL = 'https://67437f64b7464b1c2a64fdcb.mockapi.io/api/taskfy/users'; // Novo endpoint para usuários
+const API_URL = 'https://67437f64b7464b1c2a64fdcb.mockapi.io/api/taskfy/users'; // Endpoint para usuários
 
 export default function SignUpPage({ navigation }) {
   const [email, setEmail] = useState('');
@@ -13,7 +13,7 @@ export default function SignUpPage({ navigation }) {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSignUp = async () => {
-    // Validações
+    // Validações básicas
     if (!email || !password || !confirmPassword) {
       Alert.alert('Erro', 'Todos os campos devem ser preenchidos.');
       return;
@@ -24,13 +24,22 @@ export default function SignUpPage({ navigation }) {
       return;
     }
 
-    const user = { email, password };
-
     try {
-      // Enviando os dados para a API MockAPI
-      const response = await axios.post(API_URL, user); // Fazendo o POST na API
-      if (response.status === 201) {
-        // Armazenando o usuário no AsyncStorage
+      // Verificar se o e-mail já está registrado
+      const response = await axios.get(API_URL);
+      const existingUser = response.data.find(user => user.email === email);
+
+      if (existingUser) {
+        Alert.alert('Erro', 'Este e-mail já está registrado. Tente outro.');
+        return;
+      }
+
+      // Criar novo usuário
+      const user = { email, password };
+      const postResponse = await axios.post(API_URL, user);
+
+      if (postResponse.status === 201) {
+        // Salvar no AsyncStorage
         await AsyncStorage.setItem('user', JSON.stringify(user));
         Alert.alert('Sucesso', 'Usuário cadastrado com sucesso!');
         navigation.navigate('Login');
@@ -53,7 +62,7 @@ export default function SignUpPage({ navigation }) {
           <Icon name="mail-outline" size={24} color="#888" style={styles.icon} />
           <TextInput
             style={styles.input}
-            placeholder="E-mail"
+            placeholder="Usuário"
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
@@ -103,6 +112,7 @@ export default function SignUpPage({ navigation }) {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
